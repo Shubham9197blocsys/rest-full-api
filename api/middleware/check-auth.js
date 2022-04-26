@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken');
+const user = require('../model/user');
+const { countDocuments } = require('../model/user');
 
 
 module.exports = (req,res,next)=>{
@@ -23,4 +25,5 @@ module.exports = (req,res,next)=>{
            msg:'invalid token'
        })
    }
+   
 }

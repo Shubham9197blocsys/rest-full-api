@@ -7,10 +7,20 @@ const { status } = require('express/lib/response');
 const User = require('../model/user');
 const req = require('express/lib/request');
 const res = require('express/lib/response');
-const user = require('../model/user');
 const { execMap } = require('nodemon/lib/config/defaults');
 const jwt = require('jsonwebtoken');
 const checkAuth = require('../middleware/check-auth');
+const { countDocuments, db } = require('../model/user');
+const { set } = require('../../app');
+const timespan = require('jsonwebtoken/lib/timespan');
+const text = require('body-parser/lib/types/text');
+const user = require('../model/user');
+let ObjectId = require('mongodb').ObjectID;
+const nodemailer =require('nodemailer');
+
+
+
+
 
 router.get('/',checkAuth,(req,res,next)=>{
     User.find()
@@ -19,9 +29,53 @@ router.get('/',checkAuth,(req,res,next)=>{
         res.status(200).json({
             User:result
     })
+        })     
+    })
+
+
+
+    
+router.get('/date',(req,res,next)=>{
+        User.find({
+            _id: {
+                $gte: ObjectId.createFromTime(Date.now() / 1000 - 24 * 60 * 60)
+            },
+            var: transporter = nodemailer.createTransport({
+   
+                service:"gmail",
+                auth:{
+                    user:'shubham@blocsys.com',
+                    pass:'8055339863'
+                }
+            })
+        }, (err, result) => {
+            res.status(200).json({
+                User: mailOptions={
+                    from:'shubham@blocsys.com',
+                    to:'pranay@blocsys.com',
+                    subject:'simpal project',
+                    text:"number of users are" +" "+  {User:result}.User,
+                }
+                
         })
+         
+        transporter.sendMail(mailOptions,function(error, info){
+            if(error){
+                console.log(error);
+            }
+            else{
+               console.log('email has been send',info.response)
+            }
+        })
+        }).countDocuments();
+        
         
     })
+
+    
+   
+
+    
 
 router.post('/signup',(req,res,next)=>{
     bcrypt.hash(req.body.password,10,(err,hash)=>{
@@ -103,6 +157,7 @@ router.post("/login",(req,res,next)=>{
         })
     })
 })
+
 
 
 

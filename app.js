@@ -4,6 +4,7 @@ const res = require('express/lib/response');
 const app =express();
 const mongoose = require('mongoose');
 const bodyparser = require('body-parser');
+const User =require('./api/model/user')
 
 
 
@@ -25,15 +26,19 @@ app.use(bodyparser.json());
 const studentRoute =require('./api/routes/student');
 const facaltyRout =require('./api/routes/facalty');
 const userRoute =require('./api/routes/user');
+const { countDocuments } = require('./api/model/student');
 
 app.use('/student',studentRoute);
 app.use('/facalty',facaltyRout);
 app.use('/user',userRoute);
+
 
 app.use((req,res,next)=>{
     res.status(404).json({
         error:'url not found'
     })
 })
+
+
 
 module.exports=app;
